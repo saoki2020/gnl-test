@@ -12,7 +12,7 @@ int		get_next_line(int fd, char **line);
 char	*ft_read_char(int fd, char **remainder, int *read_num);
 int		ft_rewrite_line(char *temp, char **remainder, char **line);
 char	*ft_gnl_strjoin(char *s1, char *s2);
-int	ft_strlen(char *str);
+size_t	ft_strlen(char *str);
 char	*ft_strdup(char *str);
 char	*ft_strchr(char *s, int c);
 char	*ft_substr(char *s, size_t start, size_t end);

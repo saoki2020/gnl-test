@@ -1,5 +1,5 @@
 #include "get_next_line.h"
-
+/*
 void	ft_bzero(void *s, size_t n)
 {
 	size_t i;
@@ -47,6 +47,8 @@ char		*ft_strdup(char *str)
 	return (newstr);
 }
 
+
+
 char	*ft_strchr(char *s, int c)
 {
 	char	ch;
@@ -65,7 +67,6 @@ char	*ft_strchr(char *s, int c)
 	return (NULL);
 }
 
-/*
 char		*ft_substr(char *str, int start, int end)
 {
 	char	*newstr;
@@ -88,6 +89,54 @@ char		*ft_substr(char *str, int start, int end)
 	return (newstr);
 }
 */
+
+
+size_t	ft_strlen(char *str)
+{
+	size_t	len;
+
+	len = 0;
+	while (str[len])
+		len++;
+	return (len);
+}
+
+char	*ft_strdup(char *str)
+{
+	size_t	len;
+	char	*dest;
+
+	dest = (char *)malloc(ft_strlen(str) + 1);
+	if (dest == NULL)
+		return (NULL);
+	len = 0;
+	while (str[len])
+	{
+		dest[len] = str[len];
+		len++;
+	}
+	dest[len] = '\0';
+	return (dest);
+}
+
+char	*ft_strchr(char *s, int c)
+{
+	size_t	i;
+	char	*str;
+
+	i = 0;
+	str = s;
+	while (str[i])
+	{
+		if (str[i] == (char)c)
+			return (&str[i]);
+		i++;
+	}
+	if ((char)c == '\0')
+		return (&str[i]);
+	return (NULL);
+}
+
 
 size_t	ft_get_len(size_t len, size_t start, size_t s_len)
 {
