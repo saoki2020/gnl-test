@@ -8,7 +8,7 @@ int				get_next_line(int fd, char **line)
 	char		*temp;
 	int			read_num;
 
-	if (fd == -1 || line == NULL)
+	if (fd < 0 || MAX_FD <= fd || line == NULL)
 		return (-1);
 	temp = NULL;
 	while (1)
