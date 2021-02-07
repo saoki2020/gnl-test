@@ -1,32 +1,15 @@
 #include "get_next_line.h"
 
-char		*ft_strjoin_and_free(char *s1, char *s2)
+void	ft_bzero(void *s, size_t n)
 {
-	char	*newstr;
-	int		i;
-	int		j;
+	size_t i;
 
-	if (s1 == NULL || s2 == NULL)
-		return (NULL);
-	if (!(newstr = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1))))
-		return (NULL);
 	i = 0;
-	j = 0;
-	while (s1[i] != '\0')
+	while (i < n)
 	{
-		newstr[i] = s1[i];
+		((char *)s)[i] = '\0';
 		i++;
 	}
-	while (s2[j] != '\0')
-	{
-		newstr[i] = s2[j];
-		i++;
-		j++;
-	}
-	newstr[i] = '\0';
-	free(s1);
-	s1 = NULL;
-	return (newstr);
 }
 
 int		ft_strlen(char *s)
@@ -64,7 +47,7 @@ char		*ft_strdup(char *str)
 	return (newstr);
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(char *s, int c)
 {
 	char	ch;
 
@@ -103,16 +86,4 @@ char		*ft_substr(char *str, int start, int end)
 	}
 	newstr[start] = '\0';
 	return (newstr);
-}
-
-void	ft_bzero(void *s, size_t n)
-{
-	size_t i;
-
-	i = 0;
-	while (i < n)
-	{
-		((char *)s)[i] = '\0';
-		i++;
-	}
 }

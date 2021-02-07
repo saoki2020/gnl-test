@@ -1,85 +1,115 @@
 
 #include "get_next_line.h"
 
-int				ft_make_one_line(char *buf_join, char **save, char **line)
-{
-	int			len;
-
-	len = 0;
-	if (buf_join == NULL || save == NULL || line == NULL)
-		return (GNL_ERR);
-	while (buf_join[len] != '\n' && buf_join[len] != '\0')
-	{
-		len++;
-	}
-	if (buf_join[len] == '\n')
-	{
-		*line = ft_substr(buf_join, 0, len);
-		*save = ft_strdup(&buf_join[len + 1]);
-		free(buf_join);
-		buf_join = NULL;
-		return (GNL_READ);
-	}
-	*line = ft_strdup(buf_join);
-	free(buf_join);
-	buf_join = NULL;
-	return (GNL_EOF);
-}
-
-char			*ft_read_or_save(char **save, int fd, int *rc)
-{
-	char		*buf;
-
-	if (save == NULL)
-		return (NULL);
-	if (*save != NULL)
-	{
-		buf = *save;
-		*save = NULL;
-		*rc = GNL_READ;
-	}
-	else
-	{
-		buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (buf == NULL)
-			return (NULL);
-		*rc = read(fd, buf, BUFFER_SIZE);
-		if (*rc < 0)
-		{
-			free(buf);
-			buf = NULL;
-			return (NULL);
-		}
-		buf[*rc] = '\0';
-	}
-	return (buf);
-}
-
 int				get_next_line(int fd, char **line)
 {
-	static char	*save;
+	static char	*remainder;
 	char		*buf;
-	char		*buf_join;
-	int			rc;
+	char		*temp;
+	int			read_num;
 
 	if (fd == -1 || line == NULL)
-		return (GNL_ERR);
-	buf_join = NULL;
+		return (-1);
+	temp = NULL;
 	while (1)
 	{
-		buf = ft_read_or_save(&save, fd, &rc);
+		buf = ft_read_char(fd, &remainder, &read_num);
 		if (buf == NULL)
-			return (GNL_ERR);
-		if (buf_join == NULL)
-			buf_join = ft_strdup(buf);
+			return (-1);
+		if (temp == NULL)
+			temp = ft_strdup(buf);
 		else
-			buf_join = ft_strjoin_and_free(buf_join, buf);
-		if (ft_strchr(buf, '\n') || rc == GNL_EOF)
+			temp = ft_gnl_strjoin(temp, buf);
+		if (ft_strchr(buf, '\n') || read_num == 0)
 			break ;
 		free(buf);
 		buf = NULL;
 	}
 	free(buf);
 	buf = NULL;
-	return (ft_make_one_line(buf_join, &save, line));
+	return (ft_rewrite_line(temp, &remainder, line));
+}
+
+
+char			*ft_read_char(int fd, char **remainder, int *read_num)
+{
+	char		*buf;
+
+	if (remainder == NULL)
+		return (NULL);
+	if (*remainder != NULL)
+	{
+		buf = *remainder;
+		*remainder = NULL;
+		*read_num = 1;
+	}
+	else
+	{
+		buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		if (buf == NULL)
+			return (NULL);
+		*read_num = read(fd, buf, BUFFER_SIZE);
+		if (*read_num < 0)
+		{
+			free(buf);
+			buf = NULL;
+			return (NULL);
+		}
+		buf[*read_num] = '\0';
+	}
+	return (buf);
+}
+
+int				ft_rewrite_line(char *temp, char **remainder, char **line)
+{
+	int			len;
+
+	len = 0;
+	if (temp == NULL || remainder == NULL || line == NULL)
+		return (-1);
+	while (temp[len] != '\n' && temp[len] != '\0')
+	{
+		len++;
+	}
+	if (temp[len] == '\n')
+	{
+		*line = ft_substr(temp, 0, len);
+		*remainder = ft_strdup(&temp[len + 1]);
+		free(temp);
+		temp = NULL;
+		return (1);
+	}
+	*line = ft_strdup(temp);
+	free(temp);
+	temp = NULL;
+	return (0);
+}
+
+char		*ft_gnl_strjoin(char *s1, char *s2)
+{
+	char	*str;
+	int		i;
+	int		j;
+
+	if (s1 == NULL || s2 == NULL)
+		return (NULL);
+	if (!(str = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1)))
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s1[i] != '\0')
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	while (s2[j] != '\0')
+	{
+	 str[i] = s2[j];
+		i++;
+		j++;
+	}
+	str[i] = '\0';
+	free(s1);
+	s1 = NULL;
+	return (str);
 }
