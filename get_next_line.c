@@ -30,7 +30,7 @@ int				get_next_line(int fd, char **line)
 	return (ft_rewrite_line(temp, &remainder, line));
 }
 
-
+/*
 char			*ft_read_char(int fd, char **remainder, int *read_num)
 {
 	char		*buf;
@@ -59,6 +59,37 @@ char			*ft_read_char(int fd, char **remainder, int *read_num)
 	}
 	return (buf);
 }
+*/
+char	*ft_read_char(int fd, char **remainder, int *read_num)
+{
+	char	*buf;
+
+	if (remainder == NULL)
+		return (NULL);
+	if (*remainder == NULL)
+	{
+		buf = (char *)malloc(BUFFER_SIZE + 1);
+		if (buf == NULL)
+			return (NULL);
+		*read_num = read(fd, buf, BUFFER_SIZE);
+		if (*read_num < 0)
+		{
+			free(buf);
+			buf = NULL;
+			return (NULL);
+		}
+		buf[*read_num] = '\0';
+	}
+	else
+	{
+		buf = *remainder;
+		*remainder = NULL;
+		*read_num = 1;
+	}
+	return (buf);
+}
+
+
 
 int				ft_rewrite_line(char *temp, char **remainder, char **line)
 {
