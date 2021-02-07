@@ -65,7 +65,7 @@ char	*ft_strchr(char *s, int c)
 	return (NULL);
 }
 
-
+/*
 char		*ft_substr(char *str, int start, int end)
 {
 	char	*newstr;
@@ -86,4 +86,43 @@ char		*ft_substr(char *str, int start, int end)
 	}
 	newstr[start] = '\0';
 	return (newstr);
+}
+*/
+
+size_t	ft_get_len(size_t len, size_t start, size_t s_len)
+{
+	size_t	substr_len;
+
+	if (len <= s_len - start)
+		substr_len = len;
+	else
+		substr_len = s_len - start;
+	return (substr_len);
+}
+
+char	*ft_substr(char *s, size_t start, size_t end)
+{
+	char	*str;
+	size_t	i;
+	size_t	s_len;
+
+	i = 0;
+	if (s == NULL)
+		return (NULL);
+	s_len = ft_strlen(s);
+	if (s_len < start || end <= 0)
+		str = (char *)malloc(1);
+	else
+	{
+		str = (char *)malloc(ft_get_len(end, start, s_len) + 1);
+		if (str == NULL)
+			return (NULL);
+		while (i < end && (start + i) < s_len)
+		{
+			str[i] = s[start + i];
+			i++;
+		}
+	}
+	str[i] = '\0';
+	return (str);
 }
